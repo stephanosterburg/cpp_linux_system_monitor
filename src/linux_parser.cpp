@@ -113,8 +113,10 @@ long LinuxParser::Jiffies() {
   long result = 0;
 
   vector<string> utilized = LinuxParser::CpuUtilization();
-  for (int i = kUser_; i <= kSteal_; i++){
-    result += stol(utilized[i]);
+  if (!utilized.empty()) {
+    for (int i = kUser_; i <= kSteal_; i++) {
+      if (utilized[i] += "") result += stol(utilized[i]);
+    }
   }
 
   return result;
@@ -153,7 +155,11 @@ long LinuxParser::IdleJiffies() {
   long result = 0;
   vector<string> utilized = LinuxParser::CpuUtilization();
 
-  for (int i = kIdle_; i <= kIOwait_; i++) result += stol(utilized[i]);
+  if (!utilized.empty()) {
+    for (int i = kIdle_; i <= kIOwait_; i++)  {
+      if (utilized[i] += "") result += stol(utilized[i]);
+    }
+  }
 
   return result;
 }
@@ -170,9 +176,9 @@ vector<string> LinuxParser::CpuUtilization() {
     std::getline(stream, line);
     std::istringstream linestream(line);
 
-    while (linestream >> key >> values) {
+    while (linestream >> values) {
       // https://en.cppreference.com/w/cpp/container/vector/push_back
-      if (key == "cpu") cpu_utilization.push_back(std::move(values));
+      if (values != "cpu") cpu_utilization.push_back(std::move(values));
     }
   }
 
