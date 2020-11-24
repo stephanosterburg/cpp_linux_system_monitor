@@ -196,8 +196,10 @@ int LinuxParser::TotalProcesses() {
     std::getline(stream, line);
     std::istringstream linestream(line);
 
-    while (linestream >> key >> line){
-      if (key == "processes") return stoi(value);
+    while (linestream >> key >> value){
+      if (key == "processes") {
+        if (value != "") return stoi(value);
+      }
     }
   }
 
@@ -215,8 +217,10 @@ int LinuxParser::RunningProcesses() {
     std::getline(stream, line);
     std::istringstream linestream(line);
 
-    while (linestream >> key >> line){
-      if (key == "procs_runnings") return stoi(value);
+    while (linestream >> key >> value){
+      if (key == "procs_running") {
+        if (value != "") return stoi(value);
+      }
     }
   }
 
