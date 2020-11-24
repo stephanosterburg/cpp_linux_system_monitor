@@ -5,18 +5,10 @@
 
 // Return the aggregate CPU utilization
 float Processor::Utilization() {
-  jiffies_start_sum = LinuxParser::Jiffies();
-  jiffies_start_act = LinuxParser::ActiveJiffies();
+    long jiffies_total = LinuxParser::Jiffies();
+    long jiffies_active = LinuxParser::ActiveJiffies();
 
-  // Sleep 100 milliseconds
-  usleep(100000);
+    this->cpu_utilization_ = (float)jiffies_active / (float)jiffies_total;
 
-  jiffies_end_sum = LinuxParser::Jiffies();
-  jiffies_end_act = LinuxParser::ActiveJiffies();
-
-  double delta_sum = jiffies_end_sum - jiffies_start_sum;
-  double delta_act = jiffies_end_act - jiffies_start_act;
-  if (delta_sum == 0) return 0.0;
-
-  return delta_act - delta_sum;
+    return cpu_utilization_;
 }
