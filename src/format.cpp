@@ -1,7 +1,7 @@
-#include <string>
-#include <iomanip>
-
 #include "format.h"
+
+#include <iomanip>
+#include <string>
 
 using std::string;
 using std::to_string;
@@ -21,24 +21,21 @@ string Format::ElapsedTime(long seconds) {
   if (hrs < 10) {
     h << std::setfill('0') << std::setw(2) << hrs;
     time += h.str();
-  }
-  else {
+  } else {
     time += to_string(hrs);
   }
 
   if (min < 10) {
     m << std::setfill('0') << std::setw(2) << min;
     time += ":" + m.str();
-  }
-  else {
+  } else {
     time += ":" + to_string(min);
   }
 
   if (sec < 10) {
     s << std::setfill('0') << std::setw(2) << sec;
     time += ":" + s.str();
-  }
-  else {
+  } else {
     time += ":" + to_string(sec);
   }
 
