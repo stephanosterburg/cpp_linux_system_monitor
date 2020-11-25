@@ -3,6 +3,7 @@
 #include <iomanip>
 #include <string>
 #include <vector>
+#include <filesystem>
 
 #include "linux_parser.h"
 
@@ -12,6 +13,8 @@ using std::stoi;
 using std::string;
 using std::to_string;
 using std::vector;
+
+namespace fs = std::filesystem;
 
 // DONE: An example of how to read data from the filesystem
 string LinuxParser::OperatingSystem() {
@@ -52,24 +55,55 @@ string LinuxParser::Kernel() {
 }
 
 // BONUS: Update this to use std::filesystem
+//vector<int> LinuxParser::Pids() {
+//  vector<int> pids;
+//  DIR* directory = opendir(kProcDirectory.c_str());
+//  struct dirent* file;
+//  while ((file = readdir(directory)) != nullptr) {
+//    // Is this a directory?
+//    if (file->d_type == DT_DIR) {
+//      // Is every character of the name a digit?
+//      string filename(file->d_name);
+//      if (std::all_of(filename.begin(), filename.end(), isdigit)) {
+//        int pid = stoi(filename);
+//        pids.push_back(pid);
+//      }
+//    }
+//  }
+//  closedir(directory);
+//  return pids;
+//}
+
+// https://stackoverflow.com/a/4654718/5983691
+bool is_number(const std::string& s)
+{
+  std::string::const_iterator it = s.begin();
+  while (it != s.end() && std::isdigit(*it)) ++it;
+  return !s.empty() && it == s.end();
+}
+
 vector<int> LinuxParser::Pids() {
+  string value;
+  vector<string> pidstr;
   vector<int> pids;
-  DIR* directory = opendir(kProcDirectory.c_str());
-  struct dirent* file;
-  while ((file = readdir(directory)) != nullptr) {
-    // Is this a directory?
-    if (file->d_type == DT_DIR) {
-      // Is every character of the name a digit?
-      string filename(file->d_name);
-      if (std::all_of(filename.begin(), filename.end(), isdigit)) {
-        int pid = stoi(filename);
-        pids.push_back(pid);
+
+  fs::create_directories(kProcDirectory);
+  for (auto& p : fs::directory_iterator(kProcDirectory)) {
+    if (fs::is_directory(p)) {
+      std::stringstream filename(p.path());
+      while (std::getline(filename, value, '/')) {
+        if (is_number(value))
+          pidstr.push_back(value);
       }
     }
   }
-  closedir(directory);
+  // Convert vector<string> to vector<int>
+  std::transform(pidstr.begin(), pidstr.end(), std::back_inserter(pids),
+                 [](const std::string& str) { return std::stoi(str); });
+
   return pids;
 }
+
 
 // Read and return the system memory utilization
 float LinuxParser::MemoryUtilization() {
