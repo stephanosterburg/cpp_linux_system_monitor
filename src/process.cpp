@@ -31,7 +31,7 @@ float Process::CpuUtilization() {
   // #15 stime - CPU time spent in kernel code, measured in clock ticks
   // #16 cutime - Waited-for children's CPU time spent in user code (in clock ticks)
   // #17 cstime - Waited-for children's CPU time spent in kernel code (in clock ticks)
-  // #22 z - Time when the process started, measured in clock ticks
+  // #22 start_time - Time when the process started, measured in clock ticks
   vector<string> cpu_utilization = LinuxParser::CpuUtilization(pid_);
   long utime = stol(cpu_utilization[14]);
   long stime = stol(cpu_utilization[15]);
