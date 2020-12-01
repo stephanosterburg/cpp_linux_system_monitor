@@ -276,7 +276,7 @@ string LinuxParser::Ram(int pid) {
       std::istringstream linestream(line);
       linestream >> key >> value;
 
-      if (key == "VmSize") memory << std::setprecision(2) << stof(value) / 1000;
+      if (key == "VmSize:") memory << std::fixed << std::setprecision(2) << stof(value) / 1000;
     }
   }
 
@@ -341,4 +341,21 @@ long LinuxParser::UpTime(int pid) {
     return LinuxParser::UpTime() - (stol(uptime[21]) / sysconf(_SC_CLK_TCK));
   }
   return 0;
+}
+
+// Read and return CPU utilization for each process
+vector<string> LinuxParser::CpuUtilization(int pid) {
+  string line;
+  string values;
+  vector<string> cpu_utilization;
+
+  std::ifstream filestream(kProcDirectory + to_string(pid) + kStatFilename);
+  if (filestream.is_open()) {
+    std::getline(filestream, line);
+    std::istringstream linestream(line);
+
+    while (linestream >> values) cpu_utilization.push_back(std::move(values));
+  }
+
+  return cpu_utilization;
 }

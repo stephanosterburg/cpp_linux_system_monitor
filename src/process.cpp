@@ -10,6 +10,7 @@
 
 #include "linux_parser.h"
 
+using std::stoi;
 using std::string;
 using std::to_string;
 using std::vector;
@@ -20,12 +21,38 @@ int Process::Pid() { return pid_; }
 // Return this process's CPU utilization
 // https://stackoverflow.com/a/16736599/5983691
 float Process::CpuUtilization() {
-  long total_time = LinuxParser::ActiveJiffies(pid_);
-  long seconds = LinuxParser::UpTime(pid_);
-  float utilization =
-      (((float)total_time / sysconf(_SC_CLK_TCK)) / (float)seconds) * 100;
+  // long uptime = LinuxParser::UpTime();
+  // long start_time = LinuxParser::UpTime(pid_);
+  // long total_time = LinuxParser::ActiveJiffies(pid_);
 
-  return utilization;
+  long uptime = LinuxParser::UpTime();
+
+  // #14 utime - CPU time spent in user code, measured in clock ticks
+  // #15 stime - CPU time spent in kernel code, measured in clock ticks
+  // #16 cutime - Waited-for children's CPU time spent in user code (in clock ticks)
+  // #17 cstime - Waited-for children's CPU time spent in kernel code (in clock ticks)
+  // #22 z - Time when the process started, measured in clock ticks
+  vector<string> cpu_utilization = LinuxParser::CpuUtilization(pid_);
+  long utime = stol(cpu_utilization[14]);
+  long stime = stol(cpu_utilization[15]);
+  long cutime = stol(cpu_utilization[16]);
+  long cstime = stol(cpu_utilization[17]);
+  long start_time = stol(cpu_utilization[22]);
+
+  // First we determine the total time spent for the process:
+  long total_time = utime + stime;
+
+  // We also have to decide whether we want to include the time from children processes.
+  // If we do, then we add those values to total_time:
+  total_time = total_time + cutime + cstime;
+
+  // Next we get the total elapsed time in seconds since the process started:
+  long seconds = uptime - (start_time / sysconf(_SC_CLK_TCK));
+
+  // Finally we calculate the CPU usage percentage:
+  float cpu_usage = 100 * ((total_time / sysconf(_SC_CLK_TCK)) / seconds);
+
+  return cpu_usage;
 }
 
 // Return the command that generated this process
@@ -42,5 +69,5 @@ long int Process::UpTime() { return LinuxParser::UpTime(pid_); }
 
 // Overload the "less than" comparison operator for Process objects
 bool Process::operator<(Process const& a) const {
-  return stol(LinuxParser::Ram(a.pid_)) > stol(LinuxParser::Ram(pid_));
+  return Process::CpuUtilization() < a.Process::CpuUtilization();
 }
