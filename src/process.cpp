@@ -1,7 +1,4 @@
-#include "process.h"
-
 #include <unistd.h>
-
 #include <cctype>
 #include <iostream>
 #include <sstream>
@@ -9,8 +6,9 @@
 #include <vector>
 
 #include "linux_parser.h"
+#include "process.h"
 
-using std::stoi;
+using std::stol;
 using std::string;
 using std::to_string;
 using std::vector;
@@ -31,7 +29,7 @@ float Process::CpuUtilization() {
   // #15 stime - CPU time spent in kernel code, measured in clock ticks
   // #16 cutime - Waited-for children's CPU time spent in user code (in clock ticks)
   // #17 cstime - Waited-for children's CPU time spent in kernel code (in clock ticks)
-  // #22 start_time - Time when the process started, measured in clock ticks
+  // #22 z - Time when the process started, measured in clock ticks
   vector<string> cpu_utilization = LinuxParser::CpuUtilization(pid_);
   long utime = stol(cpu_utilization[14]);
   long stime = stol(cpu_utilization[15]);
@@ -68,6 +66,6 @@ string Process::User() { return LinuxParser::User(pid_); }
 long int Process::UpTime() { return LinuxParser::UpTime(pid_); }
 
 // Overload the "less than" comparison operator for Process objects
-bool Process::operator<(Process const& a) const {
+bool Process::operator<(Process & a)  {
   return Process::CpuUtilization() < a.Process::CpuUtilization();
 }
