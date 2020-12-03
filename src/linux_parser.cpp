@@ -123,7 +123,7 @@ float LinuxParser::MemoryUtilization() {
     }
   }
 
-  return (total_mem - free_mem) / total_mem;
+  return ((float) 1 - free_mem / total_mem);
 }
 
 // Read and return the system uptime
