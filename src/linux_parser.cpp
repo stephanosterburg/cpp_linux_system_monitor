@@ -3,7 +3,7 @@
 #include <iomanip>
 #include <string>
 #include <vector>
-#include <filesystem>
+//#include <filesystem>
 
 #include "linux_parser.h"
 
@@ -14,7 +14,7 @@ using std::string;
 using std::to_string;
 using std::vector;
 
-namespace fs = std::filesystem;
+//namespace fs = std::filesystem;
 
 // DONE: An example of how to read data from the filesystem
 string LinuxParser::OperatingSystem() {
@@ -55,28 +55,28 @@ string LinuxParser::Kernel() {
 }
 
 // BONUS: Update this to use std::filesystem
-//vector<int> LinuxParser::Pids() {
-//  vector<int> pids;
-//  DIR* directory = opendir(kProcDirectory.c_str());
-//  struct dirent* file;
-//  while ((file = readdir(directory)) != nullptr) {
-//    // Is this a directory?
-//    if (file->d_type == DT_DIR) {
-//      // Is every character of the name a digit?
-//      string filename(file->d_name);
-//      if (std::all_of(filename.begin(), filename.end(), isdigit)) {
-//        int pid = stoi(filename);
-//        pids.push_back(pid);
-//      }
-//    }
-//  }
-//  closedir(directory);
-//  return pids;
-//}
+vector<int> LinuxParser::Pids() {
+  vector<int> pids;
+  DIR* directory = opendir(kProcDirectory.c_str());
+  struct dirent* file;
+  while ((file = readdir(directory)) != nullptr) {
+    // Is this a directory?
+    if (file->d_type == DT_DIR) {
+      // Is every character of the name a digit?
+      string filename(file->d_name);
+      if (std::all_of(filename.begin(), filename.end(), isdigit)) {
+        int pid = stoi(filename);
+        pids.push_back(pid);
+      }
+    }
+  }
+  closedir(directory);
+  return pids;
+}
 
 /*
   C++ 17
-*/
+
 // https://stackoverflow.com/a/4654718/5983691
 bool is_number(const std::string& s)
 {
@@ -106,6 +106,7 @@ vector<int> LinuxParser::Pids() {
 
   return pids;
 }
+*/
 
 // Read and return the system memory utilization
 float LinuxParser::MemoryUtilization() {
