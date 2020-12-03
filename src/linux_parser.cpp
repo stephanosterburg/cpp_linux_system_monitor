@@ -74,6 +74,9 @@ string LinuxParser::Kernel() {
 //  return pids;
 //}
 
+/*
+  C++ 17
+*/
 // https://stackoverflow.com/a/4654718/5983691
 bool is_number(const std::string& s)
 {
@@ -103,7 +106,6 @@ vector<int> LinuxParser::Pids() {
 
   return pids;
 }
-
 
 // Read and return the system memory utilization
 float LinuxParser::MemoryUtilization() {
