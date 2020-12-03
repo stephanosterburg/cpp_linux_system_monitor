@@ -3,7 +3,6 @@
 #include <iomanip>
 #include <string>
 #include <vector>
-//#include <filesystem>
 
 #include "linux_parser.h"
 
@@ -14,7 +13,6 @@ using std::string;
 using std::to_string;
 using std::vector;
 
-//namespace fs = std::filesystem;
 
 // DONE: An example of how to read data from the filesystem
 string LinuxParser::OperatingSystem() {
@@ -76,6 +74,9 @@ vector<int> LinuxParser::Pids() {
 
 /*
   C++ 17
+
+#include <filesystem>
+namespace fs = std::filesystem;
 
 // https://stackoverflow.com/a/4654718/5983691
 bool is_number(const std::string& s)
