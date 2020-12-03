@@ -21,10 +21,6 @@ int Process::Pid() { return pid_; }
 // Return this process's CPU utilization
 // https://stackoverflow.com/a/16736599/5983691
 float Process::CpuUtilization() {
-  // long uptime = LinuxParser::UpTime();
-  // long start_time = LinuxParser::UpTime(pid_);
-  // long total_time = LinuxParser::ActiveJiffies(pid_);
-
   long uptime = LinuxParser::UpTime();
 
   // #14 utime - CPU time spent in user code, measured in clock ticks
@@ -47,10 +43,10 @@ float Process::CpuUtilization() {
   total_time = total_time + cutime + cstime;
 
   // Next we get the total elapsed time in seconds since the process started:
-  long seconds = uptime - (start_time / sysconf(_SC_CLK_TCK));
+  float seconds = uptime - (start_time / sysconf(_SC_CLK_TCK));
 
   // Finally we calculate the CPU usage percentage:
-  float cpu_usage = 100 * ((total_time / sysconf(_SC_CLK_TCK)) / seconds);
+  float cpu_usage = ((total_time / sysconf(_SC_CLK_TCK)) / seconds);
 
   return cpu_usage;
 }
