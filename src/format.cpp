@@ -1,7 +1,7 @@
-#include "format.h"
-
 #include <iomanip>
 #include <string>
+
+#include "format.h"
 
 using std::string;
 using std::to_string;

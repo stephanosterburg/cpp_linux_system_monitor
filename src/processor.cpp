@@ -1,14 +1,14 @@
-#include <unistd.h>
 #include <chrono>
-#include <thread>
-#include <vector>
 #include <string>
+#include <thread>
+#include <unistd.h>
+#include <vector>
 
 #include "linux_parser.h"
 #include "processor.h"
 
-using std::vector;
 using std::string;
+using std::vector;
 
 // Return the aggregate CPU utilization
 float Processor::Utilization() {

@@ -1,16 +1,14 @@
-#include "process.h"
-
-#include <unistd.h>
-
 #include <cctype>
 #include <iostream>
 #include <sstream>
 #include <string>
+#include <unistd.h>
 #include <vector>
 
 #include "linux_parser.h"
+#include "process.h"
 
-using std::stoi;
+using std::stol;
 using std::string;
 using std::to_string;
 using std::vector;
@@ -25,9 +23,10 @@ float Process::CpuUtilization() {
 
   // #14 utime - CPU time spent in user code, measured in clock ticks
   // #15 stime - CPU time spent in kernel code, measured in clock ticks
-  // #16 cutime - Waited-for children's CPU time spent in user code (in clock ticks)
-  // #17 cstime - Waited-for children's CPU time spent in kernel code (in clock ticks)
-  // #22 start_time - Time when the process started, measured in clock ticks
+  // #16 cutime - Waited-for children's CPU time spent in user code (in clock
+  // ticks) #17 cstime - Waited-for children's CPU time spent in kernel code (in
+  // clock ticks) #22 starttime - Time when the process started, measured in
+  // clock ticks
   vector<string> cpu_utilization = LinuxParser::CpuUtilization(pid_);
   long utime = stol(cpu_utilization[13]);
   long stime = stol(cpu_utilization[14]);
@@ -38,8 +37,8 @@ float Process::CpuUtilization() {
   // First we determine the total time spent for the process:
   long total_time = utime + stime;
 
-  // We also have to decide whether we want to include the time from children processes.
-  // If we do, then we add those values to total_time:
+  // We also have to decide whether we want to include the time from children
+  // processes. If we do, then we add those values to total_time:
   total_time = total_time + cutime + cstime;
 
   // Next we get the total elapsed time in seconds since the process started:
@@ -64,6 +63,6 @@ string Process::User() { return LinuxParser::User(pid_); }
 long int Process::UpTime() { return LinuxParser::UpTime(pid_); }
 
 // Overload the "less than" comparison operator for Process objects
-bool Process::operator<(Process & a) {
+bool Process::operator<(Process &a) {
   return Process::CpuUtilization() < a.Process::CpuUtilization();
 }
