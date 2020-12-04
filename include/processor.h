@@ -2,11 +2,11 @@
 #define PROCESSOR_H
 
 class Processor {
-public:
+ public:
   float Utilization();
 
   // Declare any necessary private members
-private:
+ private:
   float cpu_utilization_;
 };
 

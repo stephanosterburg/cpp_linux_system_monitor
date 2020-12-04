@@ -1,11 +1,13 @@
+#include "processor.h"
+
+#include <unistd.h>
+
 #include <chrono>
 #include <string>
 #include <thread>
-#include <unistd.h>
 #include <vector>
 
 #include "linux_parser.h"
-#include "processor.h"
 
 using std::string;
 using std::vector;

@@ -1,12 +1,14 @@
+#include "process.h"
+
+#include <unistd.h>
+
 #include <cctype>
 #include <iostream>
 #include <sstream>
 #include <string>
-#include <unistd.h>
 #include <vector>
 
 #include "linux_parser.h"
-#include "process.h"
 
 using std::stol;
 using std::string;

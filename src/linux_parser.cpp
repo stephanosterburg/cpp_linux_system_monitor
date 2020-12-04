@@ -1,10 +1,11 @@
+#include "linux_parser.h"
+
 #include <dirent.h>
+#include <unistd.h>
+
 #include <iomanip>
 #include <string>
-#include <unistd.h>
 #include <vector>
-
-#include "linux_parser.h"
 
 using std::stof;
 using std::stoi;
@@ -121,10 +122,8 @@ float LinuxParser::MemoryUtilization() {
     while (std::getline(filestream, line)) {
       std::istringstream linestream(line);
       linestream >> key >> value;
-      if (key == "MemTotal:")
-        total_mem = stof(value);
-      if (key == "MemFree:")
-        free_mem = stof(value);
+      if (key == "MemTotal:") total_mem = stof(value);
+      if (key == "MemFree:") free_mem = stof(value);
     }
   }
 
@@ -153,8 +152,7 @@ long LinuxParser::Jiffies() {
   vector<string> utilized = LinuxParser::CpuUtilization();
   if (!utilized.empty()) {
     for (int i = kUser_; i <= kSteal_; i++) {
-      if (utilized[i] != "")
-        result += stol(utilized[i]);
+      if (utilized[i] != "") result += stol(utilized[i]);
     }
   }
 
@@ -176,8 +174,7 @@ long LinuxParser::ActiveJiffies(int pid) {
     // see https://man7.org/linux/man-pages/man5/proc.5.html
     int i = 0;
     while (linestream >> value) {
-      if (i >= 13 && i <= 16)
-        result += stol(value);
+      if (i >= 13 && i <= 16) result += stol(value);
       i++;
     }
   }
@@ -197,8 +194,7 @@ long LinuxParser::IdleJiffies() {
   vector<string> utilized = LinuxParser::CpuUtilization();
   if (!utilized.empty()) {
     for (int i = kIdle_; i <= kIOwait_; i++) {
-      if (utilized[i] != "")
-        result += stol(utilized[i]);
+      if (utilized[i] != "") result += stol(utilized[i]);
     }
   }
 
@@ -218,8 +214,7 @@ vector<string> LinuxParser::CpuUtilization() {
 
     while (linestream >> values) {
       // https://en.cppreference.com/w/cpp/container/vector/push_back
-      if (values != "cpu")
-        cpu_utilization.push_back(std::move(values));
+      if (values != "cpu") cpu_utilization.push_back(std::move(values));
     }
   }
 
@@ -238,8 +233,7 @@ int LinuxParser::TotalProcesses() {
     while (std::getline(filestream, line)) {
       std::istringstream linestream(line);
       linestream >> key >> value;
-      if (key == "processes")
-        result = stoi(value);
+      if (key == "processes") result = stoi(value);
     }
   }
   return result;
@@ -257,8 +251,7 @@ int LinuxParser::RunningProcesses() {
     while (std::getline(filestream, line)) {
       std::istringstream linestream(line);
       linestream >> key >> value;
-      if (key == "procs_running")
-        result = stoi(value);
+      if (key == "procs_running") result = stoi(value);
     }
   }
   return result;
@@ -269,8 +262,7 @@ string LinuxParser::Command(int pid) {
   string value;
 
   std::ifstream filestream(kProcDirectory + to_string(pid) + kStatFilename);
-  if (filestream.is_open())
-    std::getline(filestream, value);
+  if (filestream.is_open()) std::getline(filestream, value);
 
   return value;
 }
@@ -308,8 +300,7 @@ string LinuxParser::Uid(int pid) {
       std::istringstream linestream(line);
       linestream >> key >> value;
 
-      if (key == "Uid:")
-        return value;
+      if (key == "Uid:") return value;
     }
   }
 
@@ -331,8 +322,7 @@ string LinuxParser::User(int pid) {
       std::istringstream linestream(line);
       linestream >> username >> value >> key;
 
-      if (key == uid)
-        return username;
+      if (key == uid) return username;
     }
   }
 
@@ -349,8 +339,7 @@ long LinuxParser::UpTime(int pid) {
   if (filestream.is_open()) {
     std::getline(filestream, line);
     std::istringstream linestream(line);
-    while (linestream >> value)
-      uptime.push_back(value);
+    while (linestream >> value) uptime.push_back(value);
   }
 
   if (!uptime[21].empty()) {
@@ -370,8 +359,7 @@ vector<string> LinuxParser::CpuUtilization(int pid) {
     std::getline(filestream, line);
     std::istringstream linestream(line);
 
-    while (linestream >> values)
-      cpu_utilization.push_back(std::move(values));
+    while (linestream >> values) cpu_utilization.push_back(std::move(values));
   }
 
   return cpu_utilization;

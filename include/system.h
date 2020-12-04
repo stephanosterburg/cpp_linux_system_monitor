@@ -8,7 +8,7 @@
 #include "processor.h"
 
 class System {
-public:
+ public:
   Processor &Cpu();
   std::vector<Process> &Processes();
   float MemoryUtilization();
@@ -19,7 +19,7 @@ public:
   std::string OperatingSystem();
 
   // Define any necessary private members
-private:
+ private:
   Processor cpu_ = {};
   std::vector<Process> processes_ = {};
 };
